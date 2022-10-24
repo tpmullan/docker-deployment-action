@@ -54,7 +54,7 @@ DEPLOYMENT_COMMAND_OPTIONS=""
 if [ "$INPUT_COPY_STACK_FILE" == "true" ]; then
   STACK_FILE="$INPUT_DEPLOY_PATH/$STACK_FILE"
 else
-  DEPLOYMENT_COMMAND_OPTIONS=" --log-level debug --host ssh://$INPUT_REMOTE_DOCKER_HOST:$INPUT_REMOTE_DOCKER_PORT"
+  DEPLOYMENT_COMMAND_OPTIONS="--log-level debug --host ssh://$INPUT_REMOTE_DOCKER_HOST:$INPUT_REMOTE_DOCKER_PORT"
 fi
 
 case $INPUT_DEPLOYMENT_MODE in
@@ -65,7 +65,7 @@ case $INPUT_DEPLOYMENT_MODE in
 
   *)
     INPUT_DEPLOYMENT_MODE="docker-compose"
-    DEPLOYMENT_COMMAND="docker-compose $DEPLOYMENT_COMMAND_OPTIONS -f $STACK_FILE"
+    DEPLOYMENT_COMMAND="docker $DEPLOYMENT_COMMAND_OPTIONS compose -f $STACK_FILE"
   ;;
 esac
 
@@ -85,7 +85,7 @@ echo "Add known hosts"
 printf '%s %s\n' "$SSH_HOST" "$INPUT_SSH_PUBLIC_KEY" > /etc/ssh/ssh_known_hosts
 
 if ! [ -z "$INPUT_DOCKER_PRUNE" ] && [ $INPUT_DOCKER_PRUNE = 'true' ] ; then
-  yes | docker --log-level debug --host "ssh://$INPUT_REMOTE_DOCKER_HOST:$INPUT_REMOTE_DOCKER_PORT" system prune -a 2>&1
+  yes | docker --host "ssh://$INPUT_REMOTE_DOCKER_HOST:$INPUT_REMOTE_DOCKER_PORT" system prune -a 2>&1
 fi
 
 if ! [ -z "$INPUT_COPY_STACK_FILE" ] && [ $INPUT_COPY_STACK_FILE = 'true' ] ; then
